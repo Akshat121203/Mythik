@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SubjectService {
@@ -27,7 +28,7 @@ public class SubjectService {
         return subjectRepository.findAll();
     }
 
-    public void deleteSubject(Long subjectId) {
+    public void deleteSubject(UUID subjectId) {
         Optional<Subject> subject = subjectRepository.findById(subjectId);
 
         if (subject.isEmpty()) {

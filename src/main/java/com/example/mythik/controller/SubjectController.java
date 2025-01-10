@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/subjects")
@@ -31,7 +32,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSubject(@PathVariable Long id) {
+    public ResponseEntity<String> deleteSubject(@PathVariable UUID id) {
         try {
             subjectService.deleteSubject(id);
             return ResponseEntity.ok("Subject deleted successfully");

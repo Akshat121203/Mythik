@@ -6,7 +6,11 @@ import com.example.mythik.repository.StudentRepository;
 import com.example.mythik.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class StudentService {
@@ -23,11 +27,15 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Optional<Student> getStudent(Long studentId) {
+    public Optional<Student> getStudent(UUID studentId) {
         return studentRepository.findById(studentId);
     }
 
-    public Student updateStudentName(Long id, String newName) {
+    public List<Student> getStudentByName(String name) {
+        return studentRepository.findAllByName(name);
+    }
+
+    public Student updateStudentName(UUID id, String newName) {
 
         Optional<Student> studentOptional = studentRepository.findById(id);
         if (studentOptional.isEmpty()) {
@@ -40,7 +48,7 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Optional<Student> assignSubjectToStudent(Long studentId, Long subjectId) {
+    public Optional<Student> assignSubjectToStudent(UUID studentId, UUID subjectId) {
 
         Optional<Student> studentOptional = studentRepository.findById(studentId);
         if (studentOptional.isEmpty()) {
@@ -59,5 +67,29 @@ public class StudentService {
         studentRepository.save(student);
 
         return Optional.of(student);
+    }
+
+    public Optional<Student> assignListOfSubjectsToStudent(UUID studentId, List<UUID> subjectIds) {
+
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        if (studentOptional.isEmpty()) {
+            throw new RuntimeException("Student not found");
+        }
+
+        for(UUID subjectId : subjectIds) {
+            Optional<Subject> subjectOptional = subjectRepository.findById(subjectId);
+            if (subjectOptional.isEmpty()) {
+                throw new RuntimeException("Subject not found");
+            }
+
+            Student student = studentOptional.get();
+            Subject subject = subjectOptional.get();
+
+            student.addSubject(subject);
+            studentRepository.save(student);
+        }
+
+        return studentOptional;
+
     }
 }
